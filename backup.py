@@ -164,8 +164,7 @@ def main():
         print(f'Compress backup: Filesize: {filesize / 1024:.2f} KB')
         print(f'Compress backup: Cleaning up temp folder.')
         try:
-            backup_root_parent.unlink()
-            backup_root_parent.rmdir()
+            shutil.rmtree(backup_root_parent)
         except PermissionError:
             _shell(
                 f'rm -r {backup_root_parent}'
@@ -219,7 +218,11 @@ def main():
     docker_working_dirpath = container_netbox.config.labels.get('com.docker.compose.project.working_dir')
     print(f'Init: Docker working directory: {docker_working_dirpath}')
     # Account for the colon used in docker image names
-    docker_image_safe = docker_image.replace(':', '-')
+    docker_image_safe = ( 
+        docker_image
+        .replace(':', '-')
+        .replace('/', '-')
+    )
     # Establish tmp directory
     backup_root_parent = Path(f'./netbox_backup_{backup_datetime}')
     backup_root = backup_root_parent.joinpath(f'{docker_name}_{docker_image_safe}_{docker_netbox_version}')

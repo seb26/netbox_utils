@@ -63,7 +63,7 @@ Compress backup: Compressing...
 Compress backup: Path: backup_netbox-docker_20240619_091909.tar.gz
 Compress backup: Filesize: 7127.45 KB
 Compress backup: Cleaning up temp folder.
-Compressing backup: ✅ Done.
+Compress backup: ✅ Done.
 backup.py: All done.
 ```
 

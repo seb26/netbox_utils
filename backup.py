@@ -172,7 +172,7 @@ def main():
             )
         except Exception as e:
             print(f'Compress backup: ❌ Cleaning up temp folder - Exception {type(e)} - {e}')
-        print(f'Compressing backup: ✅ Done.')
+        print(f'Compress backup: ✅ Done.')
     
     parser = argparse.ArgumentParser()
     parser.add_argument("docker_name", help="name of netbox-docker compose instance")

@@ -8,11 +8,13 @@ This script backs up:
 * the docker working directory; and
 * an API status dump containing version info.
 
+Further reference: [Netbox OSS Documentation > Replicating Netbox](https://netboxlabs.com/docs/netbox/en/stable/administration/replicating-netbox/)
+
 ### Installation
 
 Requires:
-* Python 3 - tested on 3.12
-* Pip
+* python 3 - tested on 3.11+
+* pip
 * [python-on-whales](https://gabrieldemarmiesse.github.io/python-on-whales/) - a Python docker client
 
 Install dependencies:
@@ -26,30 +28,6 @@ Run, with the name of your docker container instance.
 ```bash
 python backup.py netbox-docker-name
 ```
-
-### Usage in Debian LXC with minimal Python installed
-
-An environment with minimal Python 3 but no pip and no ability to install system-wide/externally-managed packages.
-
-```bash
-# Install pip and venv
-sudo apt install python3-pip --no-install-recommends --no-install-suggests
-sudo apt install python3-venv
-# Install this repo
-git clone https://github.com/seb26/netbox_utils.git
-cd netbox_utils
-# Create a venv
-python3 -m venv .venv
-# Install python-on-whales
-.venv/bin/python -m pip install python-on-whales
-# Switch to backups directory
-mkdir ../backups
-cd ../backups
-# Run
-../netbox_utils/.venv/bin/python ../netbox_utils/backup.py netbox-docker-name
-```
-
-
 Output is a compressed archive (`.tar.gz`) in the shell working directory.
 
 ### Example
@@ -105,4 +83,25 @@ Output
 		> netbox-docker-name_status.json
 ```
 
+### Usage in Debian LXC with minimal Python installed
+
+An environment with minimal Python 3, but no pip and no ability to install system-wide/externally-managed packages.
+
+```bash
+# Install pip and venv
+sudo apt install python3-pip --no-install-recommends --no-install-suggests
+sudo apt install python3-venv
+# Install this repo
+git clone https://github.com/seb26/netbox_utils.git
+cd netbox_utils
+# Create a venv
+python3 -m venv .venv
+# Install python-on-whales
+.venv/bin/python -m pip install python-on-whales
+# Switch to backups directory
+mkdir ../backups
+cd ../backups
+# Run
+../netbox_utils/.venv/bin/python ../netbox_utils/backup.py netbox-docker-name
+```
 

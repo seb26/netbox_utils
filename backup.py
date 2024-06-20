@@ -153,8 +153,8 @@ def main():
         else:
             print(r)
     
-    def compress_backup(backup_target_dir: str = None):
-        print('Compress backup: Compressing...')
+    def output_backup(backup_target_dir: str = None, output_stdout: bool = False):
+        print('Output backup: Compressing...')
         if backup_target_dir:
             backup_target_dir = Path(backup_target_dir)
         else:
@@ -162,13 +162,14 @@ def main():
             backup_target_dir = Path('.')
         backup_filename = Path(f'backup_{docker_name}_{backup_datetime}.tar.gz')
         backup_filepath = backup_target_dir.joinpath(backup_filename)
-        _shell(
-            f'tar czf {backup_filepath} -C {backup_root_parent} .',
-        )
-        print(f'Compress backup: Path: {backup_filepath}')
+        if output_stdout:
+            _shell(f'tar czf - -C {backup_root_parent} .')
+        else:
+            _shell(f'tar czf {backup_filepath} -C {backup_root_parent} .')
+        print(f'Output backup: Path: {backup_filepath}')
         filesize = backup_filepath.stat().st_size
-        print(f'Compress backup: Filesize: {filesize / 1024:.2f} KB')
-        print(f'Compress backup: Cleaning up temp folder.')
+        print(f'Output backup: Filesize: {filesize / 1024:.2f} KB')
+        print(f'Output backup: Cleaning up temp folder.')
         try:
             shutil.rmtree(backup_root_parent)
         except PermissionError:
@@ -176,12 +177,13 @@ def main():
                 f'rm -r {backup_root_parent}'
             )
         except Exception as e:
-            print(f'Compress backup: ❌ Cleaning up temp folder - Exception {type(e)} - {e}')
-        print(f'Compress backup: ✅ Done.')
+            print(f'Output backup: ❌ Cleaning up temp folder - Exception {type(e)} - {e}')
+        print(f'Output backup: ✅ Done.')
     
     parser = argparse.ArgumentParser()
     parser.add_argument("docker_name", help="name of netbox-docker compose instance")
     parser.add_argument("-o", "--output-dir", help="output directory path for the backup file")
+    parser.add_argument("--output-stdout", help="output the .tar.gz to the stdout, useful for piping")
     parser.add_argument("--user", help="netbox-docker database username", default='netbox')
     parser.add_argument("--password", help="netbox-docker database password", default='netbox')
     args = parser.parse_args()
@@ -245,7 +247,7 @@ def main():
     backup_media()
     backup_docker_folder()
     dump_status()
-    compress_backup(args.output_dir)
+    output_backup(args.output_dir, args.output_stdout)
 
 if __name__ == '__main__':
     print('backup.py: Start.')

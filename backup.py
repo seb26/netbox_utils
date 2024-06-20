@@ -183,7 +183,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("docker_name", help="name of netbox-docker compose instance")
     parser.add_argument("-o", "--output-dir", help="output directory path for the backup file")
-    parser.add_argument("--output-stdout", help="output the .tar.gz to the stdout, useful for piping")
+    parser.add_argument("--output-stdout", help="output the .tar.gz to the stdout, useful for piping", action='store_true', default=False)
     parser.add_argument("--user", help="netbox-docker database username", default='netbox')
     parser.add_argument("--password", help="netbox-docker database password", default='netbox')
     args = parser.parse_args()

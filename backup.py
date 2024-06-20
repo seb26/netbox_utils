@@ -155,7 +155,9 @@ def main():
     
     def compress_backup(backup_target_dir: str = None):
         print('Compress backup: Compressing...')
-        if not backup_target_dir:
+        if backup_target_dir:
+            backup_target_dir = Path(backup_target_dir)
+        else:
             # Write to the shell cwd
             backup_target_dir = Path('.')
         backup_filename = Path(f'backup_{docker_name}_{backup_datetime}.tar.gz')

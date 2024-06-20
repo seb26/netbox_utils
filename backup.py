@@ -153,14 +153,18 @@ def main():
         else:
             print(r)
     
-    def compress_backup():
+    def compress_backup(backup_target_dir: str = None):
         print('Compress backup: Compressing...')
-        backup_final_path = Path(f'backup_{docker_name}_{backup_datetime}.tar.gz')
+        if not backup_target_dir:
+            # Write to the shell cwd
+            backup_target_dir = Path('.')
+        backup_filename = Path(f'backup_{docker_name}_{backup_datetime}.tar.gz')
+        backup_filepath = backup_target_dir.joinpath(backup_filename)
         _shell(
-            f'tar czf {backup_final_path} -C {backup_root_parent} .',
+            f'tar czf {backup_filepath} -C {backup_root_parent} .',
         )
-        print(f'Compress backup: Path: {backup_final_path}')
-        filesize = backup_final_path.stat().st_size
+        print(f'Compress backup: Path: {backup_filepath}')
+        filesize = backup_filepath.stat().st_size
         print(f'Compress backup: Filesize: {filesize / 1024:.2f} KB')
         print(f'Compress backup: Cleaning up temp folder.')
         try:
@@ -175,6 +179,7 @@ def main():
     
     parser = argparse.ArgumentParser()
     parser.add_argument("docker_name", help="name of netbox-docker compose instance")
+    parser.add_argument("-o", "--output-dir", help="output directory path for the backup file")
     parser.add_argument("--user", help="netbox-docker database username", default='netbox')
     parser.add_argument("--password", help="netbox-docker database password", default='netbox')
     args = parser.parse_args()
@@ -238,7 +243,7 @@ def main():
     backup_media()
     backup_docker_folder()
     dump_status()
-    compress_backup()
+    compress_backup(args.output_dir)
 
 if __name__ == '__main__':
     print('backup.py: Start.')

@@ -153,19 +153,19 @@ def main():
         else:
             print(r)
     
-    def output_backup(backup_target_dir: str = None, output_stdout: bool = False):
+    def output_backup(backup_target_dir: str = None, backup_target_filename: str = None):
         print('Output backup: Compressing...')
         if backup_target_dir:
             backup_target_dir = Path(backup_target_dir)
         else:
             # Write to the shell cwd
             backup_target_dir = Path('.')
-        backup_filename = Path(f'backup_{docker_name}_{backup_datetime}.tar.gz')
-        backup_filepath = backup_target_dir.joinpath(backup_filename)
-        if output_stdout:
-            _shell(f'tar czf - -C {backup_root_parent} .')
+        if backup_target_filename:
+            backup_filename = Path(backup_target_filename)
         else:
-            _shell(f'tar czf {backup_filepath} -C {backup_root_parent} .')
+            backup_filename = Path(f'backup_{docker_name}_{backup_datetime}.tar.gz')
+        backup_filepath = backup_target_dir.joinpath(backup_filename)
+        _shell(f'tar czf {backup_filepath} -C {backup_root_parent} .')
         print(f'Output backup: Path: {backup_filepath}')
         filesize = backup_filepath.stat().st_size
         print(f'Output backup: Filesize: {filesize / 1024:.2f} KB')
@@ -183,7 +183,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("docker_name", help="name of netbox-docker compose instance")
     parser.add_argument("-o", "--output-dir", help="output directory path for the backup file")
-    parser.add_argument("--output-stdout", help="output the .tar.gz to the stdout, useful for piping", action='store_true', default=False)
+    parser.add_argument("-O", "--output-file", help="output directory filepath and filename for the backup file")
     parser.add_argument("--user", help="netbox-docker database username", default='netbox')
     parser.add_argument("--password", help="netbox-docker database password", default='netbox')
     args = parser.parse_args()
@@ -247,7 +247,7 @@ def main():
     backup_media()
     backup_docker_folder()
     dump_status()
-    output_backup(args.output_dir, args.output_stdout)
+    output_backup(args.output_dir, args.output_file)
 
 if __name__ == '__main__':
     print('backup.py: Start.')

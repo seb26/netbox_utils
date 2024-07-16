@@ -233,12 +233,12 @@ def main():
         .replace('/', '-')
     )
     # Establish tmp directory
-    backup_root_parent = Path(f'./netbox_backup_{backup_datetime}')
+    backup_root_parent = Path(f'/tmp/netbox_backup_{backup_datetime}')
     backup_root = backup_root_parent.joinpath(f'{docker_name}_{docker_image_safe}_{docker_netbox_version}')
     try:
         backup_root.mkdir(parents=True, exist_ok=True)
     except Exception as e:
-        print(f'Init: ❌ Fatal - Could not write to the temp directory at .')
+        print(f'Init: ❌ Fatal - Could not write to the temp directory at: {backup_root}')
         print(f'Init: ❌ Exception {type(e)} - {e}')
         raise SystemExit
     print(f'Init: Temp directory: {backup_root.resolve()}')
